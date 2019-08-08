@@ -58,7 +58,7 @@ class UGATIT(object) :
 
         self.sample_dir = os.path.join(args.sample_dir, self.model_dir)
         check_folder(self.sample_dir)
-
+        
         # self.trainA, self.trainB = prepare_data(dataset_name=self.dataset_name, size=self.img_size
         self.trainA_dataset = glob('./dataset/{}/*.*'.format(self.dataset_name + '/trainA'))
         self.trainB_dataset = glob('./dataset/{}/*.*'.format(self.dataset_name + '/trainB'))
@@ -598,7 +598,6 @@ class UGATIT(object) :
 
     def load(self, checkpoint_dir):
         print(" [*] Reading checkpoints...")
-        checkpoint_dir = os.path.join(checkpoint_dir, self.model_dir)
 
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
         if ckpt and ckpt.model_checkpoint_path:
@@ -610,7 +609,7 @@ class UGATIT(object) :
         else:
             print(" [*] Failed to find a checkpoint")
             return False, 0
-
+        
     def test(self):
         tf.global_variables_initializer().run()
         test_A_files = glob('./dataset/{}/*.*'.format(self.dataset_name + '/testA'))
@@ -663,3 +662,21 @@ class UGATIT(object) :
                     '../..' + os.path.sep + image_path), self.img_size, self.img_size))
             index.write("</tr>")
         index.close()
+        
+    def generate(self, image):
+        model_input = np.array(image)
+        model_input = np.expand_dims(model_input, axis=0)
+        fake_images = self.sess.run(self.test_fake_B, feed_dict = {self.test_domain_A : model_input})
+        return fake_images[0]
+    
+    def load_from_latest(self, path):
+        tf.global_variables_initializer().run()
+
+        self.saver = tf.train.Saver()
+        could_load, checkpoint_counter = self.load(path)
+
+        if could_load :
+            print(" [*] Load SUCCESS")
+        else :
+            print(" [!] Load failed...")
+
