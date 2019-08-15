@@ -11,7 +11,7 @@ sess = tf.InteractiveSession(graph=g)
 def setup(opts):
     args = parse_args()
     args.phase = 'test'
-    args.img_size = 128
+    args.img_size = 256
     gan = UGATIT(sess, args)
     gan.build_model()
     gan.load_from_latest(opts['checkpoint'])
@@ -19,7 +19,7 @@ def setup(opts):
     
 @runway.command('translate', inputs={'image': runway.image}, outputs={'image': runway.image})
 def translate(gan, inputs):
-    img = inputs['image'].resize((128, 128))
+    img = inputs['image'].resize((256, 256))
     output = gan.generate(img)
     output = np.clip(output, -1, 1)
     output = ((output + 1.0) * 255 / 2.0)
