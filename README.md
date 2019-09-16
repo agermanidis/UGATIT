@@ -1,6 +1,8 @@
 ## U-GAT-IT &mdash; Official TensorFlow Implementation
 ### : Unsupervised Generative Attentional Networks with Adaptive Layer-Instance Normalization for Image-to-Image Translation
 
+[![RunwayML Badge](https://open-app.runwayml.com/gh-badge.svg)](https://open-app.runwayml.com/?model=runway/UGATIT)
+
 <div align="center">
   <img src="./assets/teaser.png">
 </div>
