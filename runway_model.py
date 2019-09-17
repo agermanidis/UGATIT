@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from UGATIT import UGATIT
 from main import parse_args
+from PIL import Image
 
 g = tf.get_default_graph()
 sess = tf.InteractiveSession(graph=g)
@@ -19,12 +20,13 @@ def setup(opts):
     
 @runway.command('translate', inputs={'image': runway.image}, outputs={'image': runway.image})
 def translate(gan, inputs):
+    original_size = inputs['image'].size
     img = inputs['image'].resize((256, 256))
     output = gan.generate(img)
     output = np.clip(output, -1, 1)
     output = ((output + 1.0) * 255 / 2.0)
     output = output.astype(np.uint8)
-    return output
+    return Image.fromarray(output).resize(original_size)
 
 if __name__ == '__main__':
     runway.run(port=8889)
